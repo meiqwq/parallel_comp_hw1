@@ -1,0 +1,5 @@
+.DS_Store
+*.o
+/benchmark-*
+!/benchmark-*.c
+!/benchmark-*.h
