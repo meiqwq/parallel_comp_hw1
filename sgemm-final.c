@@ -11,17 +11,13 @@ const char* sgemm_desc = "Simple blocked sgemm.";
  * where C is M-by-N, A is M-by-K, and B is K-by-N. */
 static void do_block (int lda, int M, int N, int K, float* A, float* B, float* C)
 {
-  /* For each row i of A */
-  for (int i = 0; i < M; ++i)
-    /* For each column j of B */ 
-    for (int j = 0; j < N; ++j) 
-    {
-      /* Compute C(i,j) */
-      float cij = C[i+j*lda];
-      for (int k = 0; k < K; ++k)
-    	cij += A[i+k*lda] * B[k+j*lda];
-      C[i+j*lda] = cij;
+  for(int j=0;j<N;++j){
+    for(int k=0;k<K;++k){
+      for(int i=0;i<M;++i){
+        C[i+j*lda] += A[i+k*lda] * B[k+j*lda];
+      }   
     }
+  }
 }
 
 /* General-block kernel for non-square matrices with distinct leading dimensions */
@@ -29,14 +25,13 @@ static void do_block_nonsquare (int ldaA, int ldaB, int ldaC,
                                 int M, int N, int K,
                                 float* A, float* B, float* C)
 {
-  for (int i = 0; i < M; ++i)
-    for (int j = 0; j < N; ++j)
-    {
-      float cij = C[i + j*ldaC];
-      for (int k = 0; k < K; ++k)
-        cij += A[i + k*ldaA] * B[k + j*ldaB];
-      C[i + j*ldaC] = cij;
+  for(int j=0;j<N;++j){
+    for(int k=0;k<K;++k){
+      for(int i=0;i<M;++i){
+        C[i+j*ldaC] += A[i+k*ldaA] * B[k+j*ldaB];
+      }   
     }
+  }
 }
 
 /* This routine performs a sgemm operation
